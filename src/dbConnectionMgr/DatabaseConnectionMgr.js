@@ -28,6 +28,24 @@ const createRecord = async (record) =>{
     }
 }
 
+const getArtistSearchHistory = async(email) =>{
+    if(!email){
+        throw new Error("Missing input")
+    } 
+
+    try{
+        const result = await connection.promise.query(
+            `SELECT DISTINCT artist 
+            FROM records
+            WHERE email = ?`,
+            [email]
+        )
+
+    } catch(err){
+        throw new Error('Database query failed');
+    }
+}
+
 module.exports={
-    createRecord,
+    createRecord,getArtistSearchHistory
 }

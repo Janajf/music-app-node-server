@@ -1,4 +1,4 @@
-const {createRecord} = require('../../dbConnectionMgr/DatabaseConnectionMgr')
+const {createRecord, getArtistSearchHistory} = require('../../dbConnectionMgr/DatabaseConnectionMgr')
 const mysql2 = require("mysql2")
 
 jest.mock('mysql2', () => {
@@ -12,6 +12,7 @@ jest.mock('mysql2', () => {
 });
 
 let mockRecord;
+let mockArtist;
 
 describe('Database functions', () =>{
     beforeEach(()=>{
@@ -20,7 +21,8 @@ describe('Database functions', () =>{
             lastName: "Faiyaz",
             email: "Faiyaz@me.com",
             artist: "Joony"
-        }
+        },
+        mockArtist = {}    
     });
 
     it('create record', async () =>{
@@ -30,5 +32,13 @@ describe('Database functions', () =>{
         expect(result).toBe(insertId);
 
     });
+
+    it('get artist search history', async () =>{
+        const firstName = "John";
+        const lastName = "Doe";
+
+        mysql2.createPool().query.mockResolvedValueOnce([{firstName,lastName}]);
+
+    })
 })
 

@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
+const { default: axios } = require('axios');
 
-const appFactory = (dbConnectionMgr) => {
+const appFactory = (dbConnectionMgr,spotifyMgr) => {
     const app = express();
     app.use(express.json());
     app.use(cors());
@@ -27,14 +28,47 @@ const appFactory = (dbConnectionMgr) => {
             })
 
         } catch(err){
-            console.log(err);
+            // console.log(err);
             res.status(500).send({
                 status: 'error',
                 message: 'Database operation failed'
                 
             });
         }
+        
     })
+
+    app.get('/artist', async (req, res)=>{
+        const artist = req.query.artist;
+        if(!artist){
+            return res.status(400).send({
+                status:'error',
+                message:'Please provide the artist\'s name'
+            })
+        }
+
+        try{
+            const result = await spotifyMgr.getArtistDiscography(artist);
+            return res.status(200).send(result)
+        } catch(err){
+            return res.status(500).send({
+                status: 'error',
+                message: 'Database operation failed. Failed to get artist discography'
+            })
+        }
+    })
+    app.get('/history', async (req, res) =>{
+        const email = req.query.email;
+
+        if(!email){
+            return res.status(400).send({
+                status:'error',
+                message:'Please provide all the required feilds'
+            })
+        }
+
+    })
+
 
 
 
